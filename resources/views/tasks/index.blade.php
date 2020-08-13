@@ -3,9 +3,9 @@
 @section('content')
 
 <!-- ここにページ毎のコンテンツを書く -->
-   <h1>タスク一覧</h1>
 
-    @if (count($tasks) > 0)
+    @if (count($tasks) > 0 && Auth::check())
+    <h1>タスク一覧</h1>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -24,8 +24,11 @@
                 @endforeach
             </tbody>
         </table>
+        {!! link_to_route('tasks.create', '作成ページ', [], ['class' => 'btn btn-primary']) !!}
+    @else
+        {!! link_to_route('signup.get', 'Sign up now!', [], ['class' => 'btn btn-lg btn-primary']) !!}
     @endif
     
-     {!! link_to_route('tasks.create', '作成ページ', [], ['class' => 'btn btn-primary']) !!}
+     
 
 @endsection
