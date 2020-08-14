@@ -15,9 +15,23 @@ class TasksController extends Controller
      */
     public function index()
     {
-        $tasks = Task::all();
+      //$tasks = Task::all();
         
-        return view('tasks.index', ['tasks' => $tasks,]);
+      //return view('tasks.index', ['tasks' => $tasks,]);
+      
+      $data = [];
+      if (\Auth::check()) { // 認証済みの場合
+            // 認証済みユーザを取得
+           $user = \Auth::user();
+            // ユーザの投稿の一覧を作成日時の降順で取得
+           $tasks = $user->tasks()->orderBy('created_at', 'desc')->paginate(10);
+
+           $data = [
+                'user' => $user,
+                'tasks' => $tasks,
+              ];
+          }
+         return view('tasks.index', $data);
     }
 
     /**
@@ -41,13 +55,15 @@ class TasksController extends Controller
     public function store(Request $request)
     {
         $request->validate(['status' => 'required|max:10']);
-    
+        
         $task = new Task;
         $task->status = $request->status;
         $task->content = $request->content;
+        $task->user_id = \Auth::id();
         $task->save();
 
-        return redirect('/');
+       // return redirect('/');
+        return back();
     }
 
     /**
@@ -104,8 +120,13 @@ class TasksController extends Controller
     public function destroy($id)
     {
         $task = Task::findOrFail($id);
-        $task->delete();
         
-        return redirect('/');
+        //$task->delete();
+         if (\Auth::id() === $task->user_id) {
+            $taskt->delete();
+        }
+         
+        //return redirect('/');
+        return back();
     }
 }
