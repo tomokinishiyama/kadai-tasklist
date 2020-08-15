@@ -24,10 +24,6 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="col-sm-8">
-                {{-- 投稿一覧 --}}
-                @include('tasks.tasks')
-        </div>
         {!! link_to_route('tasks.create', '作成ページ', [], ['class' => 'btn btn-primary']) !!}
     @else
         {!! link_to_route('signup.get', 'Sign up now!', [], ['class' => 'btn btn-lg btn-primary']) !!}

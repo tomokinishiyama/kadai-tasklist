@@ -63,7 +63,17 @@ class TasksController extends Controller
         $task->save();
 
        // return redirect('/');
-        return back();
+       //return back();
+           $user = \Auth::user();
+            // ユーザの投稿の一覧を作成日時の降順で取得
+           $tasks = $user->tasks()->orderBy('created_at', 'desc')->paginate(10);
+
+           $data = [
+                'user' => $user,
+                'tasks' => $tasks,
+              ];
+
+         return view('tasks.index', $data);
     }
 
     /**
@@ -76,7 +86,11 @@ class TasksController extends Controller
     {
         $task = Task::findOrFail($id);
         
+        if (\Auth::id() === $task->user_id) {
         return view('tasks.show', ['task' => $task,]);
+        }
+        else
+        return back();
     }
 
     /**
